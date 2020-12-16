@@ -8,9 +8,16 @@ function getDogImage(inputValue) {
   let requiredUrl = `https://dog.ceo/api/breeds/image/random/${inputValue}`;
 
   fetch(requiredUrl)
-    .then(response => response.json())
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error(response.statutsText);
+    })
     .then(responseJson => displayResults(responseJson))
-    .catch(error => alert('Something went wrong! Try again later.'));
+    .catch(err => {
+      $('#js-error-message').text(`Something went wrong: ${err.message}`);
+    });
 }
 
 /**
@@ -33,6 +40,7 @@ function getImages(arrayOfImg){
     for (let i = 0; i < arrayOfImg.length; i++){
       valueToReturn += `<img src="${arrayOfImg[i]}" class="results-img">`;
     } 
+    $('#results').removeClass('hidden');
     console.log('valueToReturn is'+valueToReturn);
     return valueToReturn;
 }
